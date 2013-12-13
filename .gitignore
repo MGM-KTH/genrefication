@@ -1,0 +1,40 @@
+# Binary
+main
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# OS files
+.DS_Store
+
+# Sublime files
+*.sub
+*.subl
+*.sublime
+
+# Latex files
+*.out
+*.log
+*.aux
+*.fdb_latexmk
+*.pdf
+*.synctex.gz
+
+# Plot project
+plottsp/*
+
+# Kattis stuff
+.kattisrc
+submit.py
+submit.sh
