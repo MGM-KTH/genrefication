@@ -9,16 +9,17 @@ def tokenize_file(inputfile, outputfile, sentence_class):
    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
    inp_f = open(inputfile)
    outp_f = open(outputfile, 'a')
-   data = inp_f.read()
+   data = inp_f.read().replace('\n', ' ')
    tokens = tokenizer.tokenize(data)
-   i = 0
-   for token in tokens:
-      i = i+1
-      token = token.replace('"', '').strip()
-      if len(token) > 0:
+   for i,token in enumerate(tokens):
+      token = ' '.join(token.split())
+      token = token.replace('"', '')
+      token = token.replace('\r',' ')
+      token = token.replace('\n',' ')
+      if len(token) > 1:
          outp_f.write("\"" + token + "\", " + sentence_class + "\n")
-         #print("----Sentence number " + str(i) + "------")
-         #print("\"" + token + "\", " + sentence_class + "\n")
+         # print("----Sentence number " + str(i) + "------")
+         # print("\"" + token + "\", " + sentence_class + "\n")
 
 
 def main(argv):
