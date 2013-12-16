@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 import nltk.data
 import re
 import string
@@ -16,8 +17,8 @@ def tokenize_file(inputfile, outputfile, sentence_class):
       token = token.replace('"', '').strip()
       if len(token) > 0:
          outp_f.write("\"" + token + "\", " + sentence_class + "\n")
-         print("----Sentence number " + str(i) + "------")
-         print("\"" + token + "\", " + sentence_class + "\n")
+         #print("----Sentence number " + str(i) + "------")
+         #print("\"" + token + "\", " + sentence_class + "\n")
 
 
 def main(argv):
