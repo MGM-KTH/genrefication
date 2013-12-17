@@ -4,6 +4,7 @@ OTHER_SOURCE="data/sentences/other/*"
 
 HORROR_DEST="data/sentences/horror_sentences.arff"
 OTHER_DEST="data/sentences/other_sentences.arff"
+HEADER="data/sentences/header.txt"
 
 DEST="data/sentences/sentences.arff"
 
@@ -20,5 +21,7 @@ do
     cat $text >> $OTHER_DEST
 done
 
+
+cat $HEADER > $DEST
 cat $HORROR_DEST >> $DEST
 cat $OTHER_DEST >> $DEST

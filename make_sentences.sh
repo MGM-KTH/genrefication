@@ -5,6 +5,10 @@ OTHER_SOURCE="data/texts/other/*"
 HORROR_DEST="data/sentences/horror/"
 OTHER_DEST="data/sentences/other/"
 
+# remove all old texts
+rm $HORROR_DEST/*
+rm $OTHER_DEST/*
+
 for text in $HORROR_SOURCE
 do
     echo "saving to $HORROR_DEST$(basename $text)"
