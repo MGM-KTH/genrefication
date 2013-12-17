@@ -70,6 +70,7 @@ public class Weka {
         options[3] = "1";
         m_Filter.setOptions(options);
         m_Filter.setInputFormat(m_Data);
+        System.out.println("Applying STWV...");
         Instances dataFiltered = Filter.useFilter(m_Data, m_Filter);
 
         
@@ -81,12 +82,15 @@ public class Weka {
         m_Classifier.setClassifier(nb);
         m_Classifier.setEvaluator(eval);
         m_Classifier.setSearch(search);
+        System.out.println("Building classifier...");
         m_Classifier.buildClassifier(dataFiltered);
 
         Evaluation eTest = new Evaluation(dataFiltered);
+        System.out.println("Evaluating model...");
         eTest.crossValidateModel(m_Classifier, dataFiltered, 5,  new Random(1));
         // String strSummary = eTest.toSummaryString();
         // System.out.println(strSummary);
+        System.out.println("Done!");
     }
 
     /**
