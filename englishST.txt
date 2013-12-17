@@ -569,11 +569,7 @@ yourself
 yourselves
 z
 zero
-####################
-#                  #
-# Custom stopwords #
-#                  #
-####################
-sherlock
-holmes
 cthulhu
+holmes
+sherlock
+whale
