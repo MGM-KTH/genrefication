@@ -16,7 +16,6 @@ import java.util.Random;
 import java.util.List;
 
 public class Weka {
-
     private static Instances m_Data = null;
     private static StringToWordVector m_Filter = new StringToWordVector();
     private static AttributeSelection m_Attr_Filter = new AttributeSelection();
@@ -57,6 +56,7 @@ public class Weka {
 
     public static void initializeModel() throws Exception{
 
+        System.out.println("Initializing model...")
         DataSource source = new DataSource("data/sentences/sentences.arff");
         m_Data = source.getDataSet();
         // setting class attribute if the m_Data format does not provide this information
@@ -65,18 +65,18 @@ public class Weka {
             // {dummy, horror, other}. Horror set (I think)
             m_Data.setClassIndex(1);
 
-
-
         // STWV
         String[] options = new String[3];
         options[0] = "-W";      // Keep 200 words
-        options[1] = "200";
+        options[1] = "400";
         options[2] = "-S";      // use stoplist
         m_Filter.setOptions(options);
         m_Filter.setInputFormat(m_Data);
+        System.out.println("Applying STWV...");
         Instances dataFiltered = Filter.useFilter(m_Data, m_Filter);
 
         
+        // Attribute filter
         InfoGainAttributeEval eval = new InfoGainAttributeEval();
         Ranker search = new Ranker();
         m_Attr_Filter.setEvaluator(eval);
@@ -85,12 +85,14 @@ public class Weka {
         // generate new data
         Instances newData = Filter.useFilter(dataFiltered, m_Attr_Filter);
 
+        // Build classifier
         m_Classifier.buildClassifier(newData);
 
         // Evaluation eTest = new Evaluation(newData);
         // eTest.crossValidateModel(m_Classifier, newData, 5,  new Random(1));
         // String strSummary = eTest.toSummaryString();
         // System.out.println(strSummary);
+        System.out.println("Model initialized!");
     }
 
     /**
