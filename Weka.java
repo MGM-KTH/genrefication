@@ -1,13 +1,13 @@
 import weka.attributeSelection.InfoGainAttributeEval;
-import weka.attributeSelection.AttributeSelection;
-import weka.classifiers.meta.AttributeSelectedClassifier;
-import weka.attributeSelection.Ranker;
+// import weka.attributeSelection.AttributeSelection;
+import weka.attributeSelection.*;
 import weka.core.*;
 import weka.core.converters.ConverterUtils.*;
 import weka.classifiers.*;
 import weka.classifiers.meta.*;
 import weka.classifiers.trees.*;
 import weka.filters.*;
+import weka.filters.supervised.attribute.AttributeSelection;
 import weka.filters.unsupervised.attribute.StringToWordVector;
 import weka.classifiers.bayes.NaiveBayes;
 import weka.classifiers.Evaluation;
@@ -19,7 +19,8 @@ public class Weka {
 
     private static Instances m_Data = null;
     private static StringToWordVector m_Filter = new StringToWordVector();
-    private static AttributeSelectedClassifier m_Classifier = new AttributeSelectedClassifier();
+    private static AttributeSelection m_Attr_Filter = new AttributeSelection();
+    private static Classifier m_Classifier = new NaiveBayes();
 
     public static void main(String[] args) throws Exception {
         initializeModel();
@@ -28,16 +29,20 @@ public class Weka {
             sentence = System.console().readLine("Enter a sentence: ");
             classify(sentence);
         }
-
     }
 
     public static void classify(String sentence)  throws Exception {
         // Create a separate test set for the sentence
         Instances testset = m_Data.stringFreeStructure();
         Instance sentence_instance = makeInstance(sentence, testset);
+        m_Filter.input(sentence_instance);
+        Instance s_Filtered_1 = m_Filter.output();
+        m_Attr_Filter.input(s_Filtered_1);
+        Instance s_Filtered_2 = m_Attr_Filter.output(); 
+
 
         // Get index of predicted value
-        double predicted = m_Classifier.classifyInstance(sentence_instance);
+        double predicted = m_Classifier.classifyInstance(s_Filtered_2);
 
         // Output class value.
         System.out.println("Sentence classified as : " +
@@ -63,28 +68,27 @@ public class Weka {
 
 
         // STWV
-        String[] options = new String[4];
+        String[] options = new String[3];
         options[0] = "-W";      // Keep 200 words
         options[1] = "200";
         options[2] = "-S";      // use stoplist
-        options[3] = "1";
         m_Filter.setOptions(options);
         m_Filter.setInputFormat(m_Data);
         Instances dataFiltered = Filter.useFilter(m_Data, m_Filter);
 
         
-        // Meta-classifier. Attribute selection before presented to classifier.
-        AttributeSelectedClassifier m_Classifier = new AttributeSelectedClassifier();
         InfoGainAttributeEval eval = new InfoGainAttributeEval();
         Ranker search = new Ranker();
-        NaiveBayes nb = new NaiveBayes();
-        m_Classifier.setClassifier(nb);
-        m_Classifier.setEvaluator(eval);
-        m_Classifier.setSearch(search);
-        m_Classifier.buildClassifier(dataFiltered);
+        m_Attr_Filter.setEvaluator(eval);
+        m_Attr_Filter.setSearch(search);
+        m_Attr_Filter.setInputFormat(dataFiltered);
+        // generate new data
+        Instances newData = Filter.useFilter(dataFiltered, m_Attr_Filter);
 
-        Evaluation eTest = new Evaluation(dataFiltered);
-        eTest.crossValidateModel(m_Classifier, dataFiltered, 5,  new Random(1));
+        m_Classifier.buildClassifier(newData);
+
+        // Evaluation eTest = new Evaluation(newData);
+        // eTest.crossValidateModel(m_Classifier, newData, 5,  new Random(1));
         // String strSummary = eTest.toSummaryString();
         // System.out.println(strSummary);
     }
@@ -96,9 +100,8 @@ public class Weka {
         System.out.println("Sentence: " + text);
 
         // Create instance of length two.
-        Instance instance = new Instance(3);
+        Instance instance = new Instance(2);
 
-        // Set value for message attribute
         Attribute messageAtt = data.attribute(0);
         instance.setValue(messageAtt, messageAtt.addStringValue(text));
 
