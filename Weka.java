@@ -66,14 +66,17 @@ public class Weka {
             m_Data.setClassIndex(1);
 
         // STWV
-        String[] options = new String[3];
+        String[] options = new String[5];
         options[0] = "-W";      // Keep 200 words
         options[1] = "400";
         options[2] = "-S";      // use stoplist
+        options[3] = "-stemmer";    // use stemming
+        options[4] = "weka.core.stemmers.IteratedLovinsStemmer";
         m_Filter.setOptions(options);
         m_Filter.setInputFormat(m_Data);
         System.out.println("Applying STWV...");
         Instances dataFiltered = Filter.useFilter(m_Data, m_Filter);
+        System.out.println("STWV applied!");
 
         
         // Attribute filter
@@ -83,10 +86,14 @@ public class Weka {
         m_Attr_Filter.setSearch(search);
         m_Attr_Filter.setInputFormat(dataFiltered);
         // generate new data
+        System.out.println("Applying attribute selection...");
         Instances newData = Filter.useFilter(dataFiltered, m_Attr_Filter);
+        System.out.println("Attribute selection applied!");
 
         // Build classifier
+        System.out.println("Building classifier from data...");
         m_Classifier.buildClassifier(newData);
+        System.out.println("Finished building classifier!");
 
         // Evaluation eTest = new Evaluation(newData);
         // eTest.crossValidateModel(m_Classifier, newData, 5,  new Random(1));
