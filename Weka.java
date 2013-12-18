@@ -56,7 +56,7 @@ public class Weka {
 
     public static void initializeModel() throws Exception{
 
-        System.out.println("Initializing model...")
+        System.out.println("Initializing model...");
         DataSource source = new DataSource("data/sentences/sentences.arff");
         m_Data = source.getDataSet();
         // setting class attribute if the m_Data format does not provide this information
