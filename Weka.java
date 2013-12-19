@@ -4,8 +4,6 @@ import weka.attributeSelection.*;
 import weka.core.*;
 import weka.core.converters.ConverterUtils.*;
 import weka.classifiers.*;
-import weka.classifiers.meta.*;
-import weka.classifiers.trees.*;
 import weka.filters.*;
 import weka.filters.supervised.attribute.AttributeSelection;
 import weka.filters.unsupervised.attribute.StringToWordVector;
@@ -37,15 +35,30 @@ public class Weka {
         m_Filter.input(sentence_instance);
         Instance s_Filtered_1 = m_Filter.output();
         m_Attr_Filter.input(s_Filtered_1);
-        Instance s_Filtered_2 = m_Attr_Filter.output(); 
+        Instance s_Filtered_2 = m_Attr_Filter.output();
 
 
         // Get index of predicted value
+        // double predicted = m_Classifier.classifyInstance(s_Filtered_2);
+        double[] dist = m_Classifier.distributionForInstance(s_Filtered_2);
         double predicted = m_Classifier.classifyInstance(s_Filtered_2);
 
-        // Output class value.
-        System.out.println("Sentence classified as : " +
+
+        System.out.println("---------------------------------------");
+        System.out.println("Probabilities:");
+        System.out.println("Horror: " + dist[1]);
+        System.out.println("Other : " + dist[2]);
+
+
+        System.out.println("Classified as : " +
                m_Data.classAttribute().value((int)predicted));
+        System.out.println("---------------------------------------");
+
+        predicted = predicted*0.65;
+        
+        System.out.println("Weighted sentence classified as : " +
+               m_Data.classAttribute().value((int)predicted));
+        System.out.println("---------------------------------------");
 
         // Evaluation eTest = new Evaluation(sentence_instance);
         // eTest.crossValidateModel(classifier, m_DataFiltered, 5,  new Random(1));
@@ -66,12 +79,14 @@ public class Weka {
             m_Data.setClassIndex(1);
 
         // STWV
-        String[] options = new String[5];
-        options[0] = "-W";      // Keep 200 words
-        options[1] = "400";
-        options[2] = "-S";      // use stoplist
-        options[3] = "-stemmer";    // use stemming
-        options[4] = "weka.core.stemmers.IteratedLovinsStemmer";
+        String[] options = new String[7];
+        options[0] = "-W";      // Keep 400 words
+        options[1] = "2000";
+        options[2] = "-stopwords";      // use stoplist
+        options[3] = "englishST.txt";
+        options[4] = "-L";      // use lowercase tokens
+        options[5] = "-stemmer";    // use stemming
+        options[6] = "weka.core.stemmers.IteratedLovinsStemmer";
         m_Filter.setOptions(options);
         m_Filter.setInputFormat(m_Data);
         System.out.println("Applying STWV...");
@@ -82,6 +97,7 @@ public class Weka {
         // Attribute filter
         InfoGainAttributeEval eval = new InfoGainAttributeEval();
         Ranker search = new Ranker();
+        // search.setThreshold(0)
         m_Attr_Filter.setEvaluator(eval);
         m_Attr_Filter.setSearch(search);
         m_Attr_Filter.setInputFormat(dataFiltered);
@@ -89,6 +105,8 @@ public class Weka {
         System.out.println("Applying attribute selection...");
         Instances newData = Filter.useFilter(dataFiltered, m_Attr_Filter);
         System.out.println("Attribute selection applied!");
+        // Prints number arrays and their class attribute
+        // System.out.println(newData);
 
         // Build classifier
         System.out.println("Building classifier from data...");
@@ -106,8 +124,6 @@ public class Weka {
     * Method that converts a text message into an instance.
     */
     private static Instance makeInstance(String text, Instances data) {
-        System.out.println("Sentence: " + text);
-
         // Create instance of length two.
         Instance instance = new Instance(2);
 
