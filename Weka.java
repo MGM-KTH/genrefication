@@ -48,9 +48,6 @@ public class Weka {
         System.out.println("Probabilities:");
         System.out.println("Horror: " + dist[1]);
         System.out.println("Other : " + dist[2]);
-
-
-        System.out.println("Prediction value: " + predicted);
         System.out.println("Classified as : " +
                m_Data.classAttribute().value((int)predicted));
         System.out.println("---------------------------------------");
