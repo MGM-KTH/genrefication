@@ -50,15 +50,22 @@ public class Weka {
         System.out.println("Other : " + dist[2]);
 
 
+        System.out.println("Prediction value: " + predicted);
         System.out.println("Classified as : " +
                m_Data.classAttribute().value((int)predicted));
         System.out.println("---------------------------------------");
-
-        predicted = predicted*0.65;
         
-        System.out.println("Weighted sentence classified as : " +
-               m_Data.classAttribute().value((int)predicted));
-        System.out.println("---------------------------------------");
+        // Experimental:
+        // Check if horror when considering prior distribution
+        if (dist[2] > dist[1]) {
+            dist[2] = dist[2]*0.79;
+            if (dist[1] > dist[2]) { // Change to horror
+                System.out.println("Weighted classification: ");
+                System.out.println("Weighted sentence classified as : " +
+                       m_Data.classAttribute().value(1));
+                System.out.println("---------------------------------------");
+            }
+        }
 
         // Evaluation eTest = new Evaluation(sentence_instance);
         // eTest.crossValidateModel(classifier, m_DataFiltered, 5,  new Random(1));
@@ -81,7 +88,7 @@ public class Weka {
         // STWV
         String[] options = new String[7];
         options[0] = "-W";      // Keep 400 words
-        options[1] = "2000";
+        options[1] = "100";
         options[2] = "-stopwords";      // use stoplist
         options[3] = "englishST.txt";
         options[4] = "-L";      // use lowercase tokens
