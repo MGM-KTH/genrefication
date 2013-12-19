@@ -576,8 +576,12 @@ sherlock
 whale
 whales
 whaler
+whalers
 whaleman
 whalemen
+whaleboat
+whaleboats
+whalebone
 whaling
 akeley
 arkham
