@@ -571,9 +571,14 @@ z
 zero
 cthulhu
 holmes
+holmwood
 sherlock
 whale
 whales
+whaler
+whaleman
+whalemen
+whaling
 akeley
 arkham
 arthur
@@ -633,3 +638,4 @@ st
 cathy
 ah
 edgar
+curwen
