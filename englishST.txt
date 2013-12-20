@@ -570,9 +570,14 @@ yourselves
 z
 zero
 cthulhu
+holm
+holme
 holmes
 holmwood
 sherlock
+catherine
+catherines
+whal
 whale
 whales
 whaler
@@ -643,3 +648,7 @@ cathy
 ah
 edgar
 curwen
+he
+she
+ll
+sh
